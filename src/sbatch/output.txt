@@ -1,0 +1,430 @@
+Processing pdb1a00...
+Smoothing: Chain A Residue 87 set to binding based on surrounding residues
+Smoothing: Chain A Residue 93 set to binding based on surrounding residues
+Smoothing: Chain A Residue 95 set to binding based on surrounding residues
+Smoothing: Chain B Residue 88 set to binding based on surrounding residues
+Smoothing: Chain B Residue 92 set to binding based on surrounding residues
+Smoothing: Chain B Residue 94 set to binding based on surrounding residues
+Smoothing: Chain B Residue 98 set to binding based on surrounding residues
+Smoothing: Chain B Residue 103 set to binding based on surrounding residues
+Smoothing: Chain C Residue 87 set to binding based on surrounding residues
+Smoothing: Chain C Residue 89 set to binding based on surrounding residues
+Smoothing: Chain C Residue 93 set to binding based on surrounding residues
+Smoothing: Chain C Residue 98 set to binding based on surrounding residues
+Smoothing: Chain C Residue 129 set to binding based on surrounding residues
+Smoothing: Chain D Residue 88 set to binding based on surrounding residues
+Smoothing: Chain D Residue 94 set to binding based on surrounding residues
+Smoothing: Chain D Residue 98 set to binding based on surrounding residues
+Smoothing: Chain D Residue 117 set to binding based on surrounding residues
+Smoothing: Chain D Residue 138 set to binding based on surrounding residues
+Processing pdb1a01...
+Smoothing: Chain A Residue 93 set to binding based on surrounding residues
+Smoothing: Chain A Residue 95 set to binding based on surrounding residues
+Smoothing: Chain B Residue 94 set to binding based on surrounding residues
+Smoothing: Chain B Residue 98 set to binding based on surrounding residues
+Smoothing: Chain C Residue 83 set to binding based on surrounding residues
+Smoothing: Chain C Residue 87 set to binding based on surrounding residues
+Smoothing: Chain C Residue 93 set to binding based on surrounding residues
+Smoothing: Chain C Residue 98 set to binding based on surrounding residues
+Smoothing: Chain D Residue 81 set to binding based on surrounding residues
+Smoothing: Chain D Residue 88 set to binding based on surrounding residues
+Smoothing: Chain D Residue 94 set to binding based on surrounding residues
+Smoothing: Chain D Residue 98 set to binding based on surrounding residues
+Smoothing: Chain D Residue 109 set to binding based on surrounding residues
+Processing pdb1a02...
+  [SKIP] pdb1a02 chain A: no CA atoms found
+  [SKIP] pdb1a02 chain B: no CA atoms found
+Smoothing: Chain F Residue 3 set to binding based on surrounding residues
+Smoothing: Chain F Residue 11 set to binding based on surrounding residues
+Smoothing: Chain N Residue 17 set to binding based on surrounding residues
+Smoothing: Chain N Residue 18 set to binding based on surrounding residues
+Smoothing: Chain N Residue 33 set to binding based on surrounding residues
+Smoothing: Chain N Residue 76 set to binding based on surrounding residues
+Smoothing: Chain N Residue 79 set to binding based on surrounding residues
+Smoothing: Chain N Residue 80 set to binding based on surrounding residues
+Smoothing: Chain N Residue 117 set to binding based on surrounding residues
+Smoothing: Chain N Residue 176 set to binding based on surrounding residues
+Processing pdb1a03...
+Smoothing: Chain A Residue 7 set to binding based on surrounding residues
+Smoothing: Chain A Residue 10 set to binding based on surrounding residues
+Smoothing: Chain A Residue 11 set to binding based on surrounding residues
+Smoothing: Chain A Residue 41 set to binding based on surrounding residues
+Smoothing: Chain A Residue 43 set to binding based on surrounding residues
+Smoothing: Chain A Residue 47 set to binding based on surrounding residues
+Smoothing: Chain A Residue 76 set to binding based on surrounding residues
+Smoothing: Chain A Residue 82 set to binding based on surrounding residues
+Smoothing: Chain A Residue 86 set to binding based on surrounding residues
+Smoothing: Chain A Residue 87 set to binding based on surrounding residues
+Smoothing: Chain B Residue 3 set to binding based on surrounding residues
+Smoothing: Chain B Residue 8 set to binding based on surrounding residues
+Smoothing: Chain B Residue 15 set to binding based on surrounding residues
+Smoothing: Chain B Residue 41 set to binding based on surrounding residues
+Smoothing: Chain B Residue 43 set to binding based on surrounding residues
+Smoothing: Chain B Residue 44 set to binding based on surrounding residues
+Smoothing: Chain B Residue 87 set to binding based on surrounding residues
+Processing pdb1a04...
+Processing pdb1a05...
+Smoothing: Chain A Residue 225 set to binding based on surrounding residues
+Smoothing: Chain A Residue 330 set to binding based on surrounding residues
+Smoothing: Chain A Residue 333 set to binding based on surrounding residues
+Smoothing: Chain A Residue 334 set to binding based on surrounding residues
+Smoothing: Chain B Residue 134 set to binding based on surrounding residues
+Smoothing: Chain B Residue 329 set to binding based on surrounding residues
+Smoothing: Chain B Residue 330 set to binding based on surrounding residues
+Processing pdb1a06...
+Smoothing: Chain A Residue 43 set to binding based on surrounding residues
+Processing pdb1a07...
+Smoothing: Chain A Residue 48 set to binding based on surrounding residues
+Smoothing: Chain A Residue 62 set to binding based on surrounding residues
+Smoothing: Chain A Residue 73 set to binding based on surrounding residues
+Smoothing: Chain A Residue 74 set to binding based on surrounding residues
+Smoothing: Chain A Residue 76 set to binding based on surrounding residues
+Smoothing: Chain A Residue 94 set to binding based on surrounding residues
+Smoothing: Chain A Residue 98 set to binding based on surrounding residues
+Smoothing: Chain B Residue 61 set to binding based on surrounding residues
+Smoothing: Chain B Residue 70 set to binding based on surrounding residues
+Smoothing: Chain B Residue 72 set to binding based on surrounding residues
+Smoothing: Chain B Residue 75 set to binding based on surrounding residues
+Smoothing: Chain B Residue 90 set to binding based on surrounding residues
+Smoothing: Chain B Residue 93 set to binding based on surrounding residues
+Smoothing: Chain B Residue 97 set to binding based on surrounding residues
+  [SKIP] pdb1a07 chain C: PDB has 2 residues but predictions have 1
+  [SKIP] pdb1a07 chain D: PDB has 2 residues but predictions have 1
+Processing pdb1a08...
+Smoothing: Chain A Residue 48 set to binding based on surrounding residues
+Smoothing: Chain A Residue 49 set to binding based on surrounding residues
+Smoothing: Chain A Residue 62 set to binding based on surrounding residues
+Smoothing: Chain A Residue 73 set to binding based on surrounding residues
+Smoothing: Chain A Residue 74 set to binding based on surrounding residues
+Smoothing: Chain A Residue 76 set to binding based on surrounding residues
+Smoothing: Chain A Residue 91 set to binding based on surrounding residues
+Smoothing: Chain A Residue 94 set to binding based on surrounding residues
+Smoothing: Chain A Residue 98 set to binding based on surrounding residues
+Smoothing: Chain A Residue 99 set to binding based on surrounding residues
+Smoothing: Chain B Residue 44 set to binding based on surrounding residues
+Smoothing: Chain B Residue 47 set to binding based on surrounding residues
+Smoothing: Chain B Residue 72 set to binding based on surrounding residues
+Smoothing: Chain B Residue 73 set to binding based on surrounding residues
+Smoothing: Chain B Residue 75 set to binding based on surrounding residues
+Smoothing: Chain B Residue 76 set to binding based on surrounding residues
+Smoothing: Chain B Residue 77 set to binding based on surrounding residues
+Smoothing: Chain B Residue 86 set to binding based on surrounding residues
+Smoothing: Chain B Residue 90 set to binding based on surrounding residues
+Smoothing: Chain B Residue 91 set to binding based on surrounding residues
+Smoothing: Chain B Residue 93 set to binding based on surrounding residues
+Smoothing: Chain B Residue 97 set to binding based on surrounding residues
+Smoothing: Chain B Residue 98 set to binding based on surrounding residues
+  [SKIP] pdb1a08 chain C: PDB has 2 residues but predictions have 1
+  [SKIP] pdb1a08 chain D: PDB has 2 residues but predictions have 1
+Processing pdb1a09...
+Smoothing: Chain A Residue 74 set to binding based on surrounding residues
+Smoothing: Chain A Residue 77 set to binding based on surrounding residues
+Smoothing: Chain A Residue 78 set to binding based on surrounding residues
+Smoothing: Chain A Residue 93 set to binding based on surrounding residues
+Smoothing: Chain A Residue 95 set to binding based on surrounding residues
+Smoothing: Chain A Residue 99 set to binding based on surrounding residues
+Smoothing: Chain B Residue 42 set to binding based on surrounding residues
+Smoothing: Chain B Residue 45 set to binding based on surrounding residues
+Smoothing: Chain B Residue 70 set to binding based on surrounding residues
+Smoothing: Chain B Residue 71 set to binding based on surrounding residues
+Smoothing: Chain B Residue 73 set to binding based on surrounding residues
+Smoothing: Chain B Residue 89 set to binding based on surrounding residues
+Smoothing: Chain B Residue 91 set to binding based on surrounding residues
+Smoothing: Chain B Residue 95 set to binding based on surrounding residues
+Smoothing: Chain B Residue 97 set to binding based on surrounding residues
+  [SKIP] pdb1a09 chain C: PDB has 2 residues but predictions have 1
+  [SKIP] pdb1a09 chain D: PDB has 2 residues but predictions have 1
+Processing pdb1a0a...
+Smoothing: Chain A Residue 1 set to binding based on surrounding residues
+Smoothing: Chain A Residue 2 set to binding based on surrounding residues
+Smoothing: Chain A Residue 15 set to binding based on surrounding residues
+Smoothing: Chain A Residue 41 set to binding based on surrounding residues
+Smoothing: Chain A Residue 45 set to binding based on surrounding residues
+Smoothing: Chain B Residue 1 set to binding based on surrounding residues
+Smoothing: Chain B Residue 41 set to binding based on surrounding residues
+Smoothing: Chain B Residue 45 set to binding based on surrounding residues
+  [SKIP] pdb1a0a chain C: no CA atoms found
+  [SKIP] pdb1a0a chain D: no CA atoms found
+Processing pdb1a0b...
+Smoothing: Chain A Residue 9 set to binding based on surrounding residues
+Smoothing: Chain A Residue 16 set to binding based on surrounding residues
+Processing pdb1a0c...
+Smoothing: Chain A Residue 51 set to binding based on surrounding residues
+Smoothing: Chain A Residue 52 set to binding based on surrounding residues
+Smoothing: Chain A Residue 53 set to binding based on surrounding residues
+Smoothing: Chain A Residue 100 set to binding based on surrounding residues
+Smoothing: Chain A Residue 139 set to binding based on surrounding residues
+Smoothing: Chain A Residue 150 set to binding based on surrounding residues
+Smoothing: Chain A Residue 294 set to binding based on surrounding residues
+Smoothing: Chain B Residue 49 set to binding based on surrounding residues
+Smoothing: Chain B Residue 50 set to binding based on surrounding residues
+Smoothing: Chain B Residue 52 set to binding based on surrounding residues
+Smoothing: Chain B Residue 53 set to binding based on surrounding residues
+Smoothing: Chain B Residue 139 set to binding based on surrounding residues
+Smoothing: Chain B Residue 147 set to binding based on surrounding residues
+Smoothing: Chain B Residue 150 set to binding based on surrounding residues
+Smoothing: Chain B Residue 184 set to binding based on surrounding residues
+Smoothing: Chain B Residue 189 set to binding based on surrounding residues
+Smoothing: Chain B Residue 294 set to binding based on surrounding residues
+Smoothing: Chain C Residue 49 set to binding based on surrounding residues
+Smoothing: Chain C Residue 53 set to binding based on surrounding residues
+Smoothing: Chain C Residue 97 set to binding based on surrounding residues
+Smoothing: Chain C Residue 139 set to binding based on surrounding residues
+Smoothing: Chain C Residue 149 set to binding based on surrounding residues
+Smoothing: Chain C Residue 150 set to binding based on surrounding residues
+Smoothing: Chain C Residue 189 set to binding based on surrounding residues
+Smoothing: Chain C Residue 298 set to binding based on surrounding residues
+Smoothing: Chain C Residue 341 set to binding based on surrounding residues
+Smoothing: Chain D Residue 49 set to binding based on surrounding residues
+Smoothing: Chain D Residue 52 set to binding based on surrounding residues
+Smoothing: Chain D Residue 53 set to binding based on surrounding residues
+Smoothing: Chain D Residue 97 set to binding based on surrounding residues
+Smoothing: Chain D Residue 184 set to binding based on surrounding residues
+Smoothing: Chain D Residue 189 set to binding based on surrounding residues
+Smoothing: Chain D Residue 298 set to binding based on surrounding residues
+Smoothing: Chain D Residue 341 set to binding based on surrounding residues
+Smoothing: Chain D Residue 342 set to binding based on surrounding residues
+Processing pdb1a0d...
+Smoothing: Chain A Residue 49 set to binding based on surrounding residues
+Smoothing: Chain A Residue 51 set to binding based on surrounding residues
+Smoothing: Chain A Residue 52 set to binding based on surrounding residues
+Smoothing: Chain A Residue 98 set to binding based on surrounding residues
+Smoothing: Chain A Residue 143 set to binding based on surrounding residues
+Smoothing: Chain A Residue 182 set to binding based on surrounding residues
+Smoothing: Chain A Residue 187 set to binding based on surrounding residues
+Smoothing: Chain A Residue 231 set to binding based on surrounding residues
+Smoothing: Chain A Residue 266 set to binding based on surrounding residues
+Smoothing: Chain A Residue 292 set to binding based on surrounding residues
+Smoothing: Chain A Residue 337 set to binding based on surrounding residues
+Smoothing: Chain B Residue 48 set to binding based on surrounding residues
+Smoothing: Chain B Residue 49 set to binding based on surrounding residues
+Smoothing: Chain B Residue 51 set to binding based on surrounding residues
+Smoothing: Chain B Residue 147 set to binding based on surrounding residues
+Smoothing: Chain B Residue 186 set to binding based on surrounding residues
+Smoothing: Chain B Residue 187 set to binding based on surrounding residues
+Smoothing: Chain B Residue 292 set to binding based on surrounding residues
+Smoothing: Chain B Residue 296 set to binding based on surrounding residues
+Smoothing: Chain B Residue 337 set to binding based on surrounding residues
+Smoothing: Chain C Residue 49 set to binding based on surrounding residues
+Smoothing: Chain C Residue 147 set to binding based on surrounding residues
+Smoothing: Chain C Residue 182 set to binding based on surrounding residues
+Smoothing: Chain C Residue 231 set to binding based on surrounding residues
+Smoothing: Chain C Residue 337 set to binding based on surrounding residues
+Smoothing: Chain D Residue 49 set to binding based on surrounding residues
+Smoothing: Chain D Residue 142 set to binding based on surrounding residues
+Smoothing: Chain D Residue 147 set to binding based on surrounding residues
+Smoothing: Chain D Residue 187 set to binding based on surrounding residues
+Smoothing: Chain D Residue 292 set to binding based on surrounding residues
+Smoothing: Chain D Residue 337 set to binding based on surrounding residues
+Processing pdb1a0e...
+Smoothing: Chain A Residue 101 set to binding based on surrounding residues
+Smoothing: Chain A Residue 139 set to binding based on surrounding residues
+Smoothing: Chain A Residue 189 set to binding based on surrounding residues
+Smoothing: Chain A Residue 234 set to binding based on surrounding residues
+Smoothing: Chain A Residue 268 set to binding based on surrounding residues
+Smoothing: Chain A Residue 296 set to binding based on surrounding residues
+Smoothing: Chain A Residue 341 set to binding based on surrounding residues
+Smoothing: Chain A Residue 342 set to binding based on surrounding residues
+Smoothing: Chain D Residue 101 set to binding based on surrounding residues
+Smoothing: Chain D Residue 139 set to binding based on surrounding residues
+Smoothing: Chain D Residue 189 set to binding based on surrounding residues
+Smoothing: Chain D Residue 296 set to binding based on surrounding residues
+Smoothing: Chain D Residue 298 set to binding based on surrounding residues
+Smoothing: Chain D Residue 304 set to binding based on surrounding residues
+Smoothing: Chain D Residue 341 set to binding based on surrounding residues
+Processing pdb1a0f...
+Smoothing: Chain A Residue 159 set to binding based on surrounding residues
+Smoothing: Chain A Residue 167 set to binding based on surrounding residues
+Smoothing: Chain B Residue 5 set to binding based on surrounding residues
+Smoothing: Chain B Residue 31 set to binding based on surrounding residues
+Smoothing: Chain B Residue 159 set to binding based on surrounding residues
+Processing pdb1a0g...
+Smoothing: Chain A Residue 21 set to binding based on surrounding residues
+Smoothing: Chain A Residue 145 set to binding based on surrounding residues
+Smoothing: Chain A Residue 203 set to binding based on surrounding residues
+Smoothing: Chain A Residue 238 set to binding based on surrounding residues
+Smoothing: Chain A Residue 244 set to binding based on surrounding residues
+Smoothing: Chain B Residue 145 set to binding based on surrounding residues
+Smoothing: Chain B Residue 177 set to binding based on surrounding residues
+Smoothing: Chain B Residue 203 set to binding based on surrounding residues
+Smoothing: Chain B Residue 205 set to binding based on surrounding residues
+Processing pdb1a0h...
+Smoothing: Chain A Residue 78 set to binding based on surrounding residues
+  [SKIP] pdb1a0h chain B: PDB has 260 residues but predictions have 259
+  [SKIP] pdb1a0h chain E: PDB has 260 residues but predictions have 259
+Processing pdb1a0i...
+Smoothing: Chain A Residue 13 set to binding based on surrounding residues
+Smoothing: Chain A Residue 35 set to binding based on surrounding residues
+Smoothing: Chain A Residue 36 set to binding based on surrounding residues
+Smoothing: Chain A Residue 52 set to binding based on surrounding residues
+Smoothing: Chain A Residue 218 set to binding based on surrounding residues
+Smoothing: Chain A Residue 222 set to binding based on surrounding residues
+Smoothing: Chain A Residue 223 set to binding based on surrounding residues
+Smoothing: Chain A Residue 227 set to binding based on surrounding residues
+Smoothing: Chain A Residue 229 set to binding based on surrounding residues
+Smoothing: Chain A Residue 234 set to binding based on surrounding residues
+Smoothing: Chain A Residue 235 set to binding based on surrounding residues
+Smoothing: Chain A Residue 315 set to binding based on surrounding residues
+Processing pdb1a0j...
+Smoothing: Chain A Residue 78 set to binding based on surrounding residues
+Smoothing: Chain A Residue 154 set to binding based on surrounding residues
+Smoothing: Chain A Residue 202 set to binding based on surrounding residues
+Smoothing: Chain B Residue 78 set to binding based on surrounding residues
+Smoothing: Chain B Residue 154 set to binding based on surrounding residues
+Smoothing: Chain B Residue 159 set to binding based on surrounding residues
+Smoothing: Chain B Residue 202 set to binding based on surrounding residues
+Smoothing: Chain C Residue 77 set to binding based on surrounding residues
+Smoothing: Chain C Residue 78 set to binding based on surrounding residues
+Smoothing: Chain C Residue 154 set to binding based on surrounding residues
+Smoothing: Chain C Residue 202 set to binding based on surrounding residues
+Smoothing: Chain D Residue 77 set to binding based on surrounding residues
+Smoothing: Chain D Residue 154 set to binding based on surrounding residues
+Smoothing: Chain D Residue 202 set to binding based on surrounding residues
+Processing pdb1a0k...
+Smoothing: Chain A Residue 47 set to binding based on surrounding residues
+Smoothing: Chain A Residue 57 set to binding based on surrounding residues
+Smoothing: Chain A Residue 58 set to binding based on surrounding residues
+Smoothing: Chain A Residue 61 set to binding based on surrounding residues
+Smoothing: Chain A Residue 65 set to binding based on surrounding residues
+Smoothing: Chain A Residue 69 set to binding based on surrounding residues
+Smoothing: Chain A Residue 70 set to binding based on surrounding residues
+Smoothing: Chain A Residue 73 set to binding based on surrounding residues
+Smoothing: Chain A Residue 84 set to binding based on surrounding residues
+Processing pdb1a0l...
+Smoothing: Chain A Residue 82 set to binding based on surrounding residues
+Smoothing: Chain A Residue 85 set to binding based on surrounding residues
+Smoothing: Chain A Residue 88 set to binding based on surrounding residues
+Smoothing: Chain A Residue 167 set to binding based on surrounding residues
+Smoothing: Chain A Residue 178 set to binding based on surrounding residues
+Smoothing: Chain A Residue 219 set to binding based on surrounding residues
+Smoothing: Chain B Residue 82 set to binding based on surrounding residues
+Smoothing: Chain B Residue 84 set to binding based on surrounding residues
+Smoothing: Chain B Residue 85 set to binding based on surrounding residues
+Smoothing: Chain B Residue 88 set to binding based on surrounding residues
+Smoothing: Chain B Residue 167 set to binding based on surrounding residues
+Smoothing: Chain B Residue 219 set to binding based on surrounding residues
+Smoothing: Chain C Residue 82 set to binding based on surrounding residues
+Smoothing: Chain C Residue 84 set to binding based on surrounding residues
+Smoothing: Chain C Residue 85 set to binding based on surrounding residues
+Smoothing: Chain C Residue 167 set to binding based on surrounding residues
+Smoothing: Chain C Residue 168 set to binding based on surrounding residues
+Smoothing: Chain C Residue 170 set to binding based on surrounding residues
+Smoothing: Chain C Residue 172 set to binding based on surrounding residues
+Smoothing: Chain C Residue 178 set to binding based on surrounding residues
+Smoothing: Chain D Residue 82 set to binding based on surrounding residues
+Smoothing: Chain D Residue 84 set to binding based on surrounding residues
+Smoothing: Chain D Residue 85 set to binding based on surrounding residues
+Smoothing: Chain D Residue 167 set to binding based on surrounding residues
+Smoothing: Chain D Residue 170 set to binding based on surrounding residues
+Smoothing: Chain D Residue 178 set to binding based on surrounding residues
+Processing pdb1a0m...
+Smoothing: Chain A Residue 7 set to binding based on surrounding residues
+Smoothing: Chain B Residue 2 set to binding based on surrounding residues
+Smoothing: Chain B Residue 7 set to binding based on surrounding residues
+Processing pdb1a0n...
+Smoothing: Chain B Residue 17 set to binding based on surrounding residues
+Smoothing: Chain B Residue 53 set to binding based on surrounding residues
+Processing pdb1a0o...
+Smoothing: Chain A Residue 93 set to binding based on surrounding residues
+Smoothing: Chain E Residue 93 set to binding based on surrounding residues
+Processing pdb1a0p...
+Smoothing: Chain A Residue 18 set to binding based on surrounding residues
+Smoothing: Chain A Residue 19 set to binding based on surrounding residues
+Smoothing: Chain A Residue 21 set to binding based on surrounding residues
+Smoothing: Chain A Residue 26 set to binding based on surrounding residues
+Smoothing: Chain A Residue 153 set to binding based on surrounding residues
+Smoothing: Chain A Residue 256 set to binding based on surrounding residues
+Processing pdb1a0q...
+Smoothing: Chain H Residue 30 set to binding based on surrounding residues
+Smoothing: Chain H Residue 50 set to binding based on surrounding residues
+Smoothing: Chain H Residue 53 set to binding based on surrounding residues
+Smoothing: Chain H Residue 95 set to binding based on surrounding residues
+Smoothing: Chain H Residue 96 set to binding based on surrounding residues
+Smoothing: Chain H Residue 97 set to binding based on surrounding residues
+Smoothing: Chain H Residue 98 set to binding based on surrounding residues
+Smoothing: Chain H Residue 103 set to binding based on surrounding residues
+Smoothing: Chain L Residue 30 set to binding based on surrounding residues
+Smoothing: Chain L Residue 32 set to binding based on surrounding residues
+Smoothing: Chain L Residue 48 set to binding based on surrounding residues
+Smoothing: Chain L Residue 87 set to binding based on surrounding residues
+Smoothing: Chain L Residue 92 set to binding based on surrounding residues
+Smoothing: Chain L Residue 93 set to binding based on surrounding residues
+Smoothing: Chain L Residue 94 set to binding based on surrounding residues
+Smoothing: Chain L Residue 95 set to binding based on surrounding residues
+Processing pdb1a0r...
+Smoothing: Chain B Residue 73 set to binding based on surrounding residues
+Smoothing: Chain B Residue 143 set to binding based on surrounding residues
+Processing pdb1a0s...
+  [SKIP] pdb1a0s: no surface points found
+Processing pdb1a0t...
+  [SKIP] pdb1a0t: no surface points found
+Processing pdb1a0u...
+Smoothing: Chain A Residue 87 set to binding based on surrounding residues
+Smoothing: Chain A Residue 95 set to binding based on surrounding residues
+Smoothing: Chain A Residue 130 set to binding based on surrounding residues
+Smoothing: Chain B Residue 69 set to binding based on surrounding residues
+Smoothing: Chain B Residue 94 set to binding based on surrounding residues
+Smoothing: Chain B Residue 98 set to binding based on surrounding residues
+Smoothing: Chain B Residue 103 set to binding based on surrounding residues
+Smoothing: Chain B Residue 109 set to binding based on surrounding residues
+Smoothing: Chain B Residue 138 set to binding based on surrounding residues
+Smoothing: Chain C Residue 83 set to binding based on surrounding residues
+Smoothing: Chain C Residue 87 set to binding based on surrounding residues
+Smoothing: Chain C Residue 98 set to binding based on surrounding residues
+Smoothing: Chain C Residue 127 set to binding based on surrounding residues
+Smoothing: Chain D Residue 27 set to binding based on surrounding residues
+Smoothing: Chain D Residue 80 set to binding based on surrounding residues
+Smoothing: Chain D Residue 92 set to binding based on surrounding residues
+Smoothing: Chain D Residue 98 set to binding based on surrounding residues
+Smoothing: Chain D Residue 100 set to binding based on surrounding residues
+Smoothing: Chain D Residue 120 set to binding based on surrounding residues
+Processing pdb1a0z...
+Smoothing: Chain A Residue 83 set to binding based on surrounding residues
+Smoothing: Chain A Residue 87 set to binding based on surrounding residues
+Smoothing: Chain A Residue 95 set to binding based on surrounding residues
+Smoothing: Chain B Residue 27 set to binding based on surrounding residues
+Smoothing: Chain B Residue 39 set to binding based on surrounding residues
+Smoothing: Chain B Residue 80 set to binding based on surrounding residues
+Smoothing: Chain B Residue 98 set to binding based on surrounding residues
+Smoothing: Chain B Residue 125 set to binding based on surrounding residues
+Smoothing: Chain B Residue 138 set to binding based on surrounding residues
+Smoothing: Chain C Residue 83 set to binding based on surrounding residues
+Smoothing: Chain C Residue 87 set to binding based on surrounding residues
+Smoothing: Chain C Residue 93 set to binding based on surrounding residues
+Smoothing: Chain D Residue 9 set to binding based on surrounding residues
+Smoothing: Chain D Residue 27 set to binding based on surrounding residues
+Smoothing: Chain D Residue 80 set to binding based on surrounding residues
+Smoothing: Chain D Residue 88 set to binding based on surrounding residues
+Smoothing: Chain D Residue 92 set to binding based on surrounding residues
+Smoothing: Chain D Residue 98 set to binding based on surrounding residues
+Smoothing: Chain D Residue 100 set to binding based on surrounding residues
+Smoothing: Chain D Residue 120 set to binding based on surrounding residues
+Smoothing: Chain D Residue 138 set to binding based on surrounding residues
+Processing pdb2a00...
+  [SKIP] pdb2a00: no surface points found
+Processing pdb2a02...
+  [SKIP] pdb2a02: no surface points found
+Processing pdb2a03...
+Smoothing: Chain A Residue 69 set to binding based on surrounding residues
+Smoothing: Chain A Residue 119 set to binding based on surrounding residues
+Smoothing: Chain A Residue 163 set to binding based on surrounding residues
+Smoothing: Chain B Residue 65 set to binding based on surrounding residues
+Smoothing: Chain B Residue 119 set to binding based on surrounding residues
+Smoothing: Chain B Residue 158 set to binding based on surrounding residues
+Processing pdb2a04...
+  [SKIP] pdb2a04 chain A: no CA atoms found
+  [SKIP] pdb2a04 chain B: no CA atoms found
+  [SKIP] pdb2a04 chain C: no CA atoms found
+  [SKIP] pdb2a04 chain D: no CA atoms found
+Traceback (most recent call last):
+  File "/home/lopatkao/esm2-generator/git/src/scripts/03_cluster_pockets.py", line 357, in <module>
+    clusters, residue_clusters, cluster_scores, _, _ = execute_atom_clustering(
+                                                       ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/lopatkao/esm2-generator/git/src/scripts/03_cluster_pockets.py", line 172, in execute_atom_clustering
+    all_points, map_point_to_atom, map_atoms_to_residue_id, atom_coords, residue_coords = get_protein_surface_points(pdb_path, mapped_prediction)
+                                                                                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/lopatkao/esm2-generator/git/src/scripts/03_cluster_pockets.py", line 115, in get_protein_surface_points
+    sr.compute(struct, level="A")
+  File "/home/lopatkao/esm-env312/lib/python3.12/site-packages/Bio/PDB/SASA.py", line 191, in compute
+    raise ValueError("Entity has no child atoms.")
+ValueError: Entity has no child atoms.
