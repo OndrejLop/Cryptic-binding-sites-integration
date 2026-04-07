@@ -18,7 +18,7 @@ DECISION_THRESHOLD = 0.7
 PREDICTIONS_DIR = ROOT / 'data' / 'intermediate' / 'predictions'
 EMBEDDINGS_DIR  = ROOT / 'data' / 'intermediate' / 'embeddings'
 PDB_DIR         = ROOT / 'data' / 'input' / 'pdb'
-OUTPUT_DIR      = ROOT / 'data' / 'output'
+OUTPUT_DIR      = ROOT / 'data' / 'output' / 'CS_predictions'
 MODEL_PATH      = ROOT / 'data' / 'models' / '3B-model.pt'
 SMOOTHING_MODEL_PATH = ROOT / 'data' / 'models' / 'smoother.pt'
 
@@ -292,16 +292,16 @@ def get_residue_ids(pdb_path, chain_id):
     return residue_ids, residue_types
 
 def output_predictions(clusters, residue_clusters, cluster_scores, pdb_id):
-    with open(f'{OUTPUT_DIR}/{pdb_id}_predictions.txt', 'w') as f:
-        f.write("name;rank;score;residue_ids;atom_ids\n")
+    with open(f'{OUTPUT_DIR}/{pdb_id}_predictions.csv', 'w') as f:
+        f.write("name,rank,score,residue_ids,atom_ids\n")
         for rank, cluster_id in enumerate(sorted(clusters.keys(), key=lambda x: cluster_scores[x], reverse=True)):
             cluster_atoms, cluster_residues, cluster_score = clusters[cluster_id], residue_clusters[cluster_id], cluster_scores[cluster_id]
-            f.write(f"pocket{rank+1};{rank+1};{cluster_score};{' '.join(map(str, cluster_residues))};{' '.join(map(str, cluster_atoms))}\n")
+            f.write(f"pocket{rank+1},{rank+1},{cluster_score},{' '.join(map(str, cluster_residues))},{' '.join(map(str, cluster_atoms))}\n")
 
 def output_residues(pocket_residues_to_pocket_number, probabilities, pdb_id, pdb_path):
     sanity_check_residues2 = set()
-    with open(f'{OUTPUT_DIR}/{pdb_id}_residues.txt', 'w') as f:
-        f.write("chain_id;residue_id;residue_type;probability;pocket_number\n")
+    with open(f'{OUTPUT_DIR}/{pdb_id}_residues.csv', 'w') as f:
+        f.write("chain_id,residue_id,residue_type,probability,pocket_number\n")
         for chain_id in probabilities.keys():
             residue_ids, residue_types = get_residue_ids(pdb_path=pdb_path, chain_id=chain_id)
             if len(residue_ids) != len(probabilities[chain_id]):
@@ -310,9 +310,9 @@ def output_residues(pocket_residues_to_pocket_number, probabilities, pdb_id, pdb
             for i, (residue_id, residue_type) in enumerate(zip(residue_ids, residue_types)):
                 if f'{chain_id}_{residue_id}' in pocket_residues_to_pocket_number:
                     sanity_check_residues2.add(f'{chain_id}_{residue_id}')
-                    f.write(f'{chain_id};{residue_id};{residue_type};{probabilities[chain_id][i]};{pocket_residues_to_pocket_number[f"{chain_id}_{residue_id}"]}\n')
+                    f.write(f'{chain_id},{residue_id},{residue_type},{probabilities[chain_id][i]},{pocket_residues_to_pocket_number[f"{chain_id}_{residue_id}"]}\n')
                 else:
-                    f.write(f'{chain_id};{residue_id};{residue_type};{probabilities[chain_id][i]};0\n')
+                    f.write(f'{chain_id},{residue_id},{residue_type},{probabilities[chain_id][i]},0\n')
     return sanity_check_residues2
 
 for PDB_ID, chain_ids in pdb_chains.items():
