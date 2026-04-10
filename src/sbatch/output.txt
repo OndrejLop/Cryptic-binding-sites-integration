@@ -1,2 +1,15 @@
-/var/spool/slurmd/job227892/slurm_script: line 13: cd: /home/lopatkao/esm2-generator/git/: No such file or directory
-python3: can't open file '/home/lopatkao/bachelor/git/src/sbatch/src/scripts/02_predict_residues.py': [Errno 2] No such file or directory
+Processing pdb101m...
+Traceback (most recent call last):
+  File "/home/lopatkao/bachelor/git/src/scripts/03_cluster_pockets.py", line 331, in <module>
+    distance_matrix = compute_distance_matrix(PDB_PATH, chain_id)
+                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/lopatkao/bachelor/git/src/scripts/03_cluster_pockets.py", line 242, in compute_distance_matrix
+    pdb_file = pdb.PDBFile.read(pdb_path)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/lopatkao/esm-env312/lib/python3.12/site-packages/biotite/structure/io/pdb/file.py", line 87, in read
+    file = super().read(file)
+           ^^^^^^^^^^^^^^^^^^
+  File "/home/lopatkao/esm-env312/lib/python3.12/site-packages/biotite/file.py", line 110, in read
+    with open(file, "r") as f:
+         ^^^^^^^^^^^^^^^
+FileNotFoundError: [Errno 2] No such file or directory: '/home/lopatkao/bachelor/git/data/input/pdb/pdb101m.pdb'
