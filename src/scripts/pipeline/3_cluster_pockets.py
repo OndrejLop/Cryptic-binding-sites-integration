@@ -423,6 +423,7 @@ def output_residues(pocket_residues_to_pocket_number, probabilities, pdb_id, pdb
     return sanity_check_residues2
 
 skip_counts = {
+    "no_pdb_file": 0,
     "no_binding_residues": 0,
     "no_ca_atoms": 0,
     "residue_count_mismatch": 0,
@@ -437,6 +438,10 @@ for PDB_ID, chain_ids in pdb_chains.items():
     smoothed_predictions = {}
     probabilities = {}
     PDB_PATH = Path(PDB_DIR) / f'{PDB_ID}.pdb'
+
+    if not PDB_PATH.exists():
+        skip_counts["no_pdb_file"] += 1
+        continue
 
     for chain_id in chain_ids:
         with open(f'{PREDICTIONS_DIR}/{PDB_ID}_{chain_id}_predictions.csv') as f:
@@ -516,6 +521,7 @@ with open(summary_path, 'w') as f:
     f.write(f"{'='*40}\n")
     f.write(f"Total PDB IDs found:         {total_pdbs}\n")
     f.write(f"Processed successfully:      {skip_counts['processed_ok']}\n")
+    f.write(f"Skipped (no PDB file):       {skip_counts['no_pdb_file']}\n")
     f.write(f"Skipped (no binding res):    {skip_counts['no_binding_residues']}\n")
     f.write(f"Skipped (no CA atoms):       {skip_counts['no_ca_atoms']}\n")
     f.write(f"Skipped (residue mismatch):  {skip_counts['residue_count_mismatch']}\n")
@@ -526,6 +532,7 @@ print(f"Clustering Summary")
 print(f"{'='*40}")
 print(f"Total PDB IDs:               {total_pdbs}")
 print(f"Processed successfully:      {skip_counts['processed_ok']}")
+print(f"Skipped (no PDB file):       {skip_counts['no_pdb_file']}")
 print(f"Skipped (no binding res):    {skip_counts['no_binding_residues']}")
 print(f"Skipped (no CA atoms):       {skip_counts['no_ca_atoms']}")
 print(f"Skipped (residue mismatch):  {skip_counts['residue_count_mismatch']}")

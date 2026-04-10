@@ -124,8 +124,12 @@ def residue_ids_to_selection(residue_ids_str):
     """
     parts = []
     for res in residue_ids_str.strip().split():
-        chain, resi = res.split("_")
-        parts.append(f"(chain {chain} and resi {resi})")
+        tokens = res.split("_", 1)
+        if len(tokens) == 2:
+            chain, resi = tokens
+            parts.append(f"(chain {chain} and resi {resi})")
+        else:
+            parts.append(f"(resi {res})")
     return " or ".join(parts)
 
 def write_pymol_script(pdb_id, unmatched_df, pdb_dir, out_path, source_label):
@@ -210,7 +214,7 @@ PYMOL_COLORS = ["red", "blue", "green", "yellow", "magenta", "cyan", "orange", "
 cs_log_rows  = []
 p2r_log_rows = []
 
-for p2r_csv in p2rank_dir.glob("*_predictions.csv"):
+for p2r_csv in sorted(p2rank_dir.glob("*_predictions.csv")):
     pdb_id = p2r_csv.stem.replace('_predictions', '')
     cs_csv = cs_dir / f'{pdb_id}_predictions.csv'
 
@@ -242,16 +246,22 @@ for p2r_csv in p2rank_dir.glob("*_predictions.csv"):
             "pockets": " ".join(pocket_number(r["name"]) for _, r in cs_unmatched.iterrows()),
             "sizes":   " ".join(str(len(r["residue_set"])) for _, r in cs_unmatched.iterrows()),
         })
-        write_pymol_script(pdb_id, cs_unmatched, pdb_dir,
-                           out_base_dir / pdb_id / "cs_novel.pml", "cs")
+        try:
+            write_pymol_script(pdb_id, cs_unmatched, pdb_dir,
+                               out_base_dir / pdb_id / "cs_novel.pml", "cs")
+        except Exception as e:
+            print(f"  [WARN] {pdb_id}: failed to write CS PyMOL script: {e}")
     if not p2r_unmatched.empty:
         p2r_log_rows.append({
             "pdb_id":  pdb_id,
             "pockets": " ".join(pocket_number(r["name"]) for _, r in p2r_unmatched.iterrows()),
             "sizes":   " ".join(str(len(r["residue_set"])) for _, r in p2r_unmatched.iterrows()),
         })
-        write_pymol_script(pdb_id, p2r_unmatched, pdb_dir,
-                           out_base_dir / pdb_id / "p2r_novel.pml", "p2r")
+        try:
+            write_pymol_script(pdb_id, p2r_unmatched, pdb_dir,
+                               out_base_dir / pdb_id / "p2r_novel.pml", "p2r")
+        except Exception as e:
+            print(f"  [WARN] {pdb_id}: failed to write P2R PyMOL script: {e}")
 
 out_base_dir.mkdir(parents=True, exist_ok=True)
 if cs_log_rows:
