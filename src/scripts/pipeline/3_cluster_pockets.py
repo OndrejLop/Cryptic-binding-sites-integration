@@ -46,6 +46,8 @@ parser.add_argument("--distance-threshold", type=float, default=10,
                     help="Spatial distance for neighbor search in Angstroms (default: 10)")
 parser.add_argument("--timestamp", action="store_true",
                     help="Add timestamp to output directory (prevents overwrites)")
+parser.add_argument("--resume-after", type=str, default=None,
+                    help="Skip PDB IDs up to and including this one (resume from next)")
 args = parser.parse_args()
 
 POSITIVE_DISTANCE_THRESHOLD = args.distance_threshold
@@ -428,11 +430,20 @@ skip_counts = {
     "no_ca_atoms": 0,
     "residue_count_mismatch": 0,
     "no_surface_points": 0,
+    "error": 0,
     "processed_ok": 0,
 }
 total_pdbs = len(pdb_chains)
 
+resumed = args.resume_after is None  # True if no resume needed
+
 for PDB_ID, chain_ids in pdb_chains.items():
+    if not resumed:
+        if PDB_ID == args.resume_after:
+            resumed = True
+            print(f'Resuming after {PDB_ID}...')
+        continue
+
     print(f'Processing {PDB_ID}...')
     predictions = {}
     smoothed_predictions = {}
@@ -443,76 +454,81 @@ for PDB_ID, chain_ids in pdb_chains.items():
         skip_counts["no_pdb_file"] += 1
         continue
 
-    for chain_id in chain_ids:
-        with open(f'{PREDICTIONS_DIR}/{PDB_ID}_{chain_id}_predictions.csv') as f:
-            prediction = np.array([float(i) for i in f.read().splitlines()])
-        predictions[chain_id] = np.where(prediction >= DECISION_THRESHOLD)[0]
-        probabilities[chain_id] = prediction
-        embedding = np.load(f'{EMBEDDINGS_DIR}/{PDB_ID}_{chain_id}_embeddings.npy')
-        distance_matrix = compute_distance_matrix(PDB_PATH, chain_id)
-        if distance_matrix is None:
-            print(f'  [SKIP] {PDB_ID} chain {chain_id}: no CA atoms found')
-            skip_counts["no_ca_atoms"] += 1
-            del predictions[chain_id]; del probabilities[chain_id]
-            continue
-        if distance_matrix.shape[0] != len(prediction):
-            print(f'  [SKIP] {PDB_ID} chain {chain_id}: PDB has {distance_matrix.shape[0]} residues but predictions have {len(prediction)}')
-            skip_counts["residue_count_mismatch"] += 1
-            del predictions[chain_id]; del probabilities[chain_id]
-            continue
-
-        smoothed_predictions[chain_id] = predictions[chain_id].copy()
-        for residue_idx in np.where(np.array(prediction) < DECISION_THRESHOLD)[0]:
-            current_residue_embedding = embedding[residue_idx]
-            close_residues_indices = np.where(distance_matrix[residue_idx] < POSITIVE_DISTANCE_THRESHOLD)[0]
-            close_binding_residues_indices = np.intersect1d(close_residues_indices, np.where(prediction > DECISION_THRESHOLD)[0])
-            if len(close_binding_residues_indices) == 0:
+    try:
+        for chain_id in chain_ids:
+            with open(f'{PREDICTIONS_DIR}/{PDB_ID}_{chain_id}_predictions.csv') as f:
+                prediction = np.array([float(i) for i in f.read().splitlines()])
+            predictions[chain_id] = np.where(prediction >= DECISION_THRESHOLD)[0]
+            probabilities[chain_id] = prediction
+            embedding = np.load(f'{EMBEDDINGS_DIR}/{PDB_ID}_{chain_id}_embeddings.npy')
+            distance_matrix = compute_distance_matrix(PDB_PATH, chain_id)
+            if distance_matrix is None:
+                print(f'  [SKIP] {PDB_ID} chain {chain_id}: no CA atoms found')
+                skip_counts["no_ca_atoms"] += 1
+                del predictions[chain_id]; del probabilities[chain_id]
                 continue
-            elif len(close_binding_residues_indices) == 1:
-                surrounding_embedding = embedding[close_binding_residues_indices].reshape(-1)
-            else:
-                surrounding_embedding = np.mean(embedding[close_binding_residues_indices], axis=0).reshape(-1)
-            concatenated_embedding = torch.tensor(np.concatenate((current_residue_embedding, surrounding_embedding), axis=0), dtype=torch.float32).to(device)
+            if distance_matrix.shape[0] != len(prediction):
+                print(f'  [SKIP] {PDB_ID} chain {chain_id}: PDB has {distance_matrix.shape[0]} residues but predictions have {len(prediction)}')
+                skip_counts["residue_count_mismatch"] += 1
+                del predictions[chain_id]; del probabilities[chain_id]
+                continue
 
-            test_logits = smoothing_model(concatenated_embedding).squeeze()
-            result = (torch.sigmoid(test_logits) > eval_utils.SMOOTHING_DECISION_THRESHOLD).float()
-            if result == 1:
-                print(f'Smoothing: Chain {chain_id} Residue {residue_idx} set to binding based on surrounding residues')
-                predictions[chain_id] = np.append(predictions[chain_id], residue_idx)
+            smoothed_predictions[chain_id] = predictions[chain_id].copy()
+            for residue_idx in np.where(np.array(prediction) < DECISION_THRESHOLD)[0]:
+                current_residue_embedding = embedding[residue_idx]
+                close_residues_indices = np.where(distance_matrix[residue_idx] < POSITIVE_DISTANCE_THRESHOLD)[0]
+                close_binding_residues_indices = np.intersect1d(close_residues_indices, np.where(prediction > DECISION_THRESHOLD)[0])
+                if len(close_binding_residues_indices) == 0:
+                    continue
+                elif len(close_binding_residues_indices) == 1:
+                    surrounding_embedding = embedding[close_binding_residues_indices].reshape(-1)
+                else:
+                    surrounding_embedding = np.mean(embedding[close_binding_residues_indices], axis=0).reshape(-1)
+                concatenated_embedding = torch.tensor(np.concatenate((current_residue_embedding, surrounding_embedding), axis=0), dtype=torch.float32).to(device)
 
-    if not predictions or all(len(p) == 0 for p in predictions.values()):
-        print(f'  [SKIP] {PDB_ID}: no binding residues above threshold')
-        skip_counts["no_binding_residues"] += 1
-        continue
+                test_logits = smoothing_model(concatenated_embedding).squeeze()
+                result = (torch.sigmoid(test_logits) > eval_utils.SMOOTHING_DECISION_THRESHOLD).float()
+                if result == 1:
+                    print(f'Smoothing: Chain {chain_id} Residue {residue_idx} set to binding based on surrounding residues')
+                    predictions[chain_id] = np.append(predictions[chain_id], residue_idx)
 
-    clusters, residue_clusters, cluster_scores, _, _ = execute_atom_clustering(
-        pdb_path=PDB_PATH, predictions=smoothed_predictions, probabilities=probabilities)
+        if not predictions or all(len(p) == 0 for p in predictions.values()):
+            print(f'  [SKIP] {PDB_ID}: no binding residues above threshold')
+            skip_counts["no_binding_residues"] += 1
+            continue
 
-    if clusters is None:
-        print(f'  [SKIP] {PDB_ID}: no surface points found')
-        skip_counts["no_surface_points"] += 1
-        continue
+        clusters, residue_clusters, cluster_scores, _, _ = execute_atom_clustering(
+            pdb_path=PDB_PATH, predictions=smoothed_predictions, probabilities=probabilities)
 
-    run_assertions(clusters)
-    run_assertions(residue_clusters)
-    assert len(cluster_scores) == len(clusters) == len(residue_clusters)
+        if clusters is None:
+            print(f'  [SKIP] {PDB_ID}: no surface points found')
+            skip_counts["no_surface_points"] += 1
+            continue
 
-    sanity_check_residues1 = set()
-    pocket_residues_to_pocket_number = {}
-    for pocket in residue_clusters:
-        for residue in residue_clusters[pocket]:
-            sanity_check_residues1.add(residue)
-            pocket_residues_to_pocket_number[residue] = pocket + 1
+        run_assertions(clusters)
+        run_assertions(residue_clusters)
+        assert len(cluster_scores) == len(clusters) == len(residue_clusters)
 
-    sanity_check_residues2 = output_residues(pocket_residues_to_pocket_number, probabilities, PDB_ID, PDB_PATH)
-    output_predictions(clusters, residue_clusters, cluster_scores, PDB_ID)
+        sanity_check_residues1 = set()
+        pocket_residues_to_pocket_number = {}
+        for pocket in residue_clusters:
+            for residue in residue_clusters[pocket]:
+                sanity_check_residues1.add(residue)
+                pocket_residues_to_pocket_number[residue] = pocket + 1
 
-    for residue in sanity_check_residues1:
-        assert residue in sanity_check_residues2, f'Residue {residue} is in sanity_check_residues1 but not in sanity_check_residues2'
-    for residue in sanity_check_residues2:
-        assert residue in sanity_check_residues1, f'Residue {residue} is in sanity_check_residues2 but not in sanity_check_residues1'
+        sanity_check_residues2 = output_residues(pocket_residues_to_pocket_number, probabilities, PDB_ID, PDB_PATH)
+        output_predictions(clusters, residue_clusters, cluster_scores, PDB_ID)
 
-    skip_counts["processed_ok"] += 1
+        for residue in sanity_check_residues1:
+            assert residue in sanity_check_residues2, f'Residue {residue} is in sanity_check_residues1 but not in sanity_check_residues2'
+        for residue in sanity_check_residues2:
+            assert residue in sanity_check_residues1, f'Residue {residue} is in sanity_check_residues2 but not in sanity_check_residues1'
+
+        skip_counts["processed_ok"] += 1
+
+    except Exception as e:
+        print(f'  [ERROR] {PDB_ID}: {e}')
+        skip_counts["error"] += 1
 
 # --- Write skip summary ---
 summary_path = OUTPUT_DIR / "skipped_clustering.txt"
@@ -526,6 +542,7 @@ with open(summary_path, 'w') as f:
     f.write(f"Skipped (no CA atoms):       {skip_counts['no_ca_atoms']}\n")
     f.write(f"Skipped (residue mismatch):  {skip_counts['residue_count_mismatch']}\n")
     f.write(f"Skipped (no surface points): {skip_counts['no_surface_points']}\n")
+    f.write(f"Skipped (error):             {skip_counts['error']}\n")
 
 print(f"\n{'='*40}")
 print(f"Clustering Summary")
@@ -537,4 +554,5 @@ print(f"Skipped (no binding res):    {skip_counts['no_binding_residues']}")
 print(f"Skipped (no CA atoms):       {skip_counts['no_ca_atoms']}")
 print(f"Skipped (residue mismatch):  {skip_counts['residue_count_mismatch']}")
 print(f"Skipped (no surface points): {skip_counts['no_surface_points']}")
+print(f"Skipped (error):             {skip_counts['error']}")
 print(f"Summary saved to: {summary_path}")
