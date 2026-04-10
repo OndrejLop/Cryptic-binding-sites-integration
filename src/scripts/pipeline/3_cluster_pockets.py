@@ -32,7 +32,7 @@ import argparse
 from datetime import datetime
 import json
 
-ROOT       = Path(__file__).parent.parent.parent
+ROOT       = Path(__file__).parent.parent.parent.parent
 
 sys.path.append(str(ROOT / 'src' / 'utilities'))
 import clustering_utils
@@ -422,6 +422,15 @@ def output_residues(pocket_residues_to_pocket_number, probabilities, pdb_id, pdb
                     f.write(f'{chain_id},{residue_id},{residue_type},{probabilities[chain_id][i]},0\n')
     return sanity_check_residues2
 
+skip_counts = {
+    "no_binding_residues": 0,
+    "no_ca_atoms": 0,
+    "residue_count_mismatch": 0,
+    "no_surface_points": 0,
+    "processed_ok": 0,
+}
+total_pdbs = len(pdb_chains)
+
 for PDB_ID, chain_ids in pdb_chains.items():
     print(f'Processing {PDB_ID}...')
     predictions = {}
@@ -438,10 +447,12 @@ for PDB_ID, chain_ids in pdb_chains.items():
         distance_matrix = compute_distance_matrix(PDB_PATH, chain_id)
         if distance_matrix is None:
             print(f'  [SKIP] {PDB_ID} chain {chain_id}: no CA atoms found')
+            skip_counts["no_ca_atoms"] += 1
             del predictions[chain_id]; del probabilities[chain_id]
             continue
         if distance_matrix.shape[0] != len(prediction):
             print(f'  [SKIP] {PDB_ID} chain {chain_id}: PDB has {distance_matrix.shape[0]} residues but predictions have {len(prediction)}')
+            skip_counts["residue_count_mismatch"] += 1
             del predictions[chain_id]; del probabilities[chain_id]
             continue
 
@@ -464,11 +475,17 @@ for PDB_ID, chain_ids in pdb_chains.items():
                 print(f'Smoothing: Chain {chain_id} Residue {residue_idx} set to binding based on surrounding residues')
                 predictions[chain_id] = np.append(predictions[chain_id], residue_idx)
 
+    if not predictions or all(len(p) == 0 for p in predictions.values()):
+        print(f'  [SKIP] {PDB_ID}: no binding residues above threshold')
+        skip_counts["no_binding_residues"] += 1
+        continue
+
     clusters, residue_clusters, cluster_scores, _, _ = execute_atom_clustering(
         pdb_path=PDB_PATH, predictions=smoothed_predictions, probabilities=probabilities)
 
     if clusters is None:
         print(f'  [SKIP] {PDB_ID}: no surface points found')
+        skip_counts["no_surface_points"] += 1
         continue
 
     run_assertions(clusters)
@@ -489,3 +506,28 @@ for PDB_ID, chain_ids in pdb_chains.items():
         assert residue in sanity_check_residues2, f'Residue {residue} is in sanity_check_residues1 but not in sanity_check_residues2'
     for residue in sanity_check_residues2:
         assert residue in sanity_check_residues1, f'Residue {residue} is in sanity_check_residues2 but not in sanity_check_residues1'
+
+    skip_counts["processed_ok"] += 1
+
+# --- Write skip summary ---
+summary_path = OUTPUT_DIR / "skipped_clustering.txt"
+with open(summary_path, 'w') as f:
+    f.write(f"Clustering Skip Summary\n")
+    f.write(f"{'='*40}\n")
+    f.write(f"Total PDB IDs found:         {total_pdbs}\n")
+    f.write(f"Processed successfully:      {skip_counts['processed_ok']}\n")
+    f.write(f"Skipped (no binding res):    {skip_counts['no_binding_residues']}\n")
+    f.write(f"Skipped (no CA atoms):       {skip_counts['no_ca_atoms']}\n")
+    f.write(f"Skipped (residue mismatch):  {skip_counts['residue_count_mismatch']}\n")
+    f.write(f"Skipped (no surface points): {skip_counts['no_surface_points']}\n")
+
+print(f"\n{'='*40}")
+print(f"Clustering Summary")
+print(f"{'='*40}")
+print(f"Total PDB IDs:               {total_pdbs}")
+print(f"Processed successfully:      {skip_counts['processed_ok']}")
+print(f"Skipped (no binding res):    {skip_counts['no_binding_residues']}")
+print(f"Skipped (no CA atoms):       {skip_counts['no_ca_atoms']}")
+print(f"Skipped (residue mismatch):  {skip_counts['residue_count_mismatch']}")
+print(f"Skipped (no surface points): {skip_counts['no_surface_points']}")
+print(f"Summary saved to: {summary_path}")

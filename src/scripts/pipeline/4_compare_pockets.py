@@ -168,7 +168,7 @@ def write_pymol_script(pdb_id, unmatched_df, pdb_dir, out_path, source_label):
     out_path.write_text("\n".join(lines))
 
 # --- Paths ---
-ROOT         = Path(__file__).parent.parent.parent
+ROOT         = Path(__file__).parent.parent.parent.parent
 p2rank_dir   = ROOT / 'data' / 'input' / 'P2Rank'
 cs_dir       = ROOT / 'data' / 'output' / 'CS_predictions'
 pdb_dir      = ROOT / 'data' / 'input' / 'pdb'

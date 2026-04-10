@@ -16,7 +16,7 @@ from Bio.PDB import PDBParser
 from Bio.SeqUtils import seq1
 from pathlib import Path
 
-ROOT       = Path(__file__).parent.parent.parent
+ROOT       = Path(__file__).parent.parent.parent.parent
 source_dir = ROOT / 'data' / 'input' / 'pdb'
 out_dir    = ROOT / 'data' / 'intermediate' / 'fastas'
 out_dir.mkdir(parents=True, exist_ok=True)

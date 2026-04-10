@@ -26,7 +26,7 @@ import torch.nn as nn
 from pathlib import Path
 import sys
 
-ROOT     = Path(__file__).parent.parent.parent
+ROOT     = Path(__file__).parent.parent.parent.parent
 MODEL_PATH = ROOT / 'data' / 'models' / '3B-model.pt'
 FASTA_DIR  = ROOT / 'data' / 'intermediate' / 'fastas'  # Read from main fastas directory
 out_dir    = ROOT / 'data' / 'intermediate' / 'predictions'
