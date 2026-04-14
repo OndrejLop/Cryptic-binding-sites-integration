@@ -1,4 +1,5 @@
 
 /data
 /src/sbatch
+/src/scripts/cluster_pockets.log
 /src/scripts/00_filter_fastas.py

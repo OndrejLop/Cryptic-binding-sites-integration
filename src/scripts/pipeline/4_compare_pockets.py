@@ -211,16 +211,23 @@ print(f"{'='*60}\n")
 # --- PyMOL color palette for visualization ---
 PYMOL_COLORS = ["red", "blue", "green", "yellow", "magenta", "cyan", "orange", "violet", "salmon", "limon"]
 
+# --- Build lookup of all CS prediction files (top-level + subdirectories) ---
+cs_lookup = {}
+for cs_csv in cs_dir.rglob("*_predictions.csv"):
+    pdb_id = cs_csv.stem.replace('_predictions', '')
+    cs_lookup[pdb_id] = cs_csv
+print(f"Found {len(cs_lookup)} CryptoSite prediction files across {cs_dir}")
+
 cs_log_rows  = []
 p2r_log_rows = []
 
 for p2r_csv in sorted(p2rank_dir.glob("*_predictions.csv")):
     pdb_id = p2r_csv.stem.replace('_predictions', '')
-    cs_csv = cs_dir / f'{pdb_id}_predictions.csv'
 
-    if not cs_csv.exists():
+    if pdb_id not in cs_lookup:
         print(f"Missing CryptoSite file for {pdb_id}, skipping.")
         continue
+    cs_csv = cs_lookup[pdb_id]
 
     p2r_df = load_pockets(p2r_csv)
     cs_df  = load_pockets(cs_csv)
