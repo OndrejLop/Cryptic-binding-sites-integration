@@ -85,6 +85,59 @@ def collect_pocket_stats(predictions_dir, file_pattern):
 
     return pockets_per_protein, pocket_sizes, pocket_scores
 
+
+def _needs_log2(data, ratio_threshold=20):
+    """Return True if data range warrants log2 scale."""
+    arr = np.array(data, dtype=float)
+    arr = arr[arr > 0]
+    if len(arr) < 10:
+        return False
+    return arr.max() / np.median(arr) > ratio_threshold
+
+
+def _violin_box(ax, datasets, labels, colors, ylabel, use_log2=False):
+    """
+    Draw violin plot with overlaid compact boxplot.
+
+    When use_log2=True, data is log2-transformed and y-tick labels show
+    original-scale values (powers of 2).
+    """
+    if use_log2:
+        plot_data = [np.log2(np.clip(d, 1, None).astype(float)) for d in datasets]
+    else:
+        plot_data = [np.array(d, dtype=float) for d in datasets]
+
+    positions = list(range(1, len(datasets) + 1))
+
+    parts = ax.violinplot(plot_data, positions=positions,
+                          showmedians=False, showextrema=False)
+    for pc, color in zip(parts['bodies'], colors):
+        pc.set_facecolor(color)
+        pc.set_alpha(0.5)
+
+    bp = ax.boxplot(plot_data, positions=positions, widths=0.18,
+                    patch_artist=True, showfliers=True,
+                    flierprops=dict(marker='.', markersize=3, alpha=0.4))
+    for patch, color in zip(bp['boxes'], colors):
+        patch.set_facecolor(color)
+        patch.set_alpha(0.8)
+    for median in bp['medians']:
+        median.set_color('black')
+        median.set_linewidth(1.5)
+
+    ax.set_xticks(positions)
+    ax.set_xticklabels(labels, fontsize=11)
+
+    if use_log2:
+        ax.set_ylabel(f"{ylabel} (log\u2082 scale)", fontsize=12)
+        ymin, ymax = ax.get_ylim()
+        ticks = np.arange(int(np.floor(ymin)), int(np.ceil(ymax)) + 1)
+        ax.set_yticks(ticks)
+        ax.set_yticklabels([str(2 ** int(t)) for t in ticks])
+    else:
+        ax.set_ylabel(ylabel, fontsize=12)
+
+
 # ============================================================
 # 1. Pipeline funnel
 # ============================================================
@@ -220,24 +273,21 @@ def plot_pocket_distributions(results, out_dir):
         fig.savefig(out_dir / f"{label}_pockets_per_protein.png", dpi=150)
         plt.close(fig)
 
-        # Pocket size histogram
+        # Pocket size violin plot (log2 scale when high variance)
         fig, ax = plt.subplots(figsize=(8, 5))
-        ax.hist(data["pocket_sizes"], bins=50, color='coral',
-                edgecolor='black', alpha=0.8)
-        ax.set_xlabel("Pocket Size (residues)", fontsize=12)
-        ax.set_ylabel("Count", fontsize=12)
+        log2 = _needs_log2(data["pocket_sizes"])
+        _violin_box(ax, [data["pocket_sizes"]], [method], ['coral'],
+                    "Pocket Size (residues)", use_log2=log2)
         ax.set_title(f"{method}: Pocket Size Distribution", fontsize=14)
         plt.tight_layout()
         fig.savefig(out_dir / f"{label}_pocket_sizes.png", dpi=150)
         plt.close(fig)
 
-        # Pocket score histogram
+        # Pocket score violin plot
         if data["pocket_scores"]:
             fig, ax = plt.subplots(figsize=(8, 5))
-            ax.hist(data["pocket_scores"], bins=50, color='mediumpurple',
-                    edgecolor='black', alpha=0.8)
-            ax.set_xlabel("Pocket Score", fontsize=12)
-            ax.set_ylabel("Count", fontsize=12)
+            _violin_box(ax, [data["pocket_scores"]], [method],
+                        ['mediumpurple'], "Pocket Score")
             ax.set_title(f"{method}: Pocket Score Distribution", fontsize=14)
             plt.tight_layout()
             fig.savefig(out_dir / f"{label}_pocket_scores.png", dpi=150)
@@ -260,18 +310,18 @@ def plot_pocket_distributions(results, out_dir):
         fig.savefig(out_dir / "comparison_pockets_per_protein.png", dpi=150)
         plt.close(fig)
 
-        # Combined: pocket size boxplot
+        # Combined: pocket size violin plot (log2 scale when high variance)
         fig, ax = plt.subplots(figsize=(8, 5))
-        box_data = [d["pocket_sizes"] for d in valid.values()]
-        bp = ax.boxplot(box_data, labels=list(valid.keys()), patch_artist=True)
-        colors = ['steelblue', 'coral']
-        for patch, color in zip(bp['boxes'], colors):
-            patch.set_facecolor(color)
-            patch.set_alpha(0.7)
-        ax.set_ylabel("Pocket Size (residues)", fontsize=12)
+        all_sizes = [s for d in valid.values() for s in d["pocket_sizes"]]
+        log2 = _needs_log2(all_sizes)
+        _violin_box(ax,
+                    [d["pocket_sizes"] for d in valid.values()],
+                    list(valid.keys()),
+                    ['steelblue', 'coral'],
+                    "Pocket Size (residues)", use_log2=log2)
         ax.set_title("Pocket Size Comparison", fontsize=14)
         plt.tight_layout()
-        fig.savefig(out_dir / "comparison_pocket_sizes_boxplot.png", dpi=150)
+        fig.savefig(out_dir / "comparison_pocket_sizes.png", dpi=150)
         plt.close(fig)
 
 # ============================================================
@@ -350,15 +400,16 @@ def plot_novel_pockets(results, out_dir):
     has_sizes = {m: d for m, d in valid.items() if d["sizes"]}
     if has_sizes:
         fig, ax = plt.subplots(figsize=(8, 5))
-        box_data = [d["sizes"] for d in has_sizes.values()]
-        bp = ax.boxplot(box_data, labels=list(has_sizes.keys()), patch_artist=True)
-        for patch, color in zip(bp['boxes'], colors[:len(has_sizes)]):
-            patch.set_facecolor(color)
-            patch.set_alpha(0.7)
-        ax.set_ylabel("Pocket Size (residues)", fontsize=12)
+        all_novel = [s for d in has_sizes.values() for s in d["sizes"]]
+        log2 = _needs_log2(all_novel)
+        _violin_box(ax,
+                    [d["sizes"] for d in has_sizes.values()],
+                    list(has_sizes.keys()),
+                    colors[:len(has_sizes)],
+                    "Pocket Size (residues)", use_log2=log2)
         ax.set_title("Novel Pocket Size Distribution", fontsize=14)
         plt.tight_layout()
-        fig.savefig(out_dir / "novel_pocket_sizes_boxplot.png", dpi=150)
+        fig.savefig(out_dir / "novel_pocket_sizes.png", dpi=150)
         plt.close(fig)
 
 # ============================================================

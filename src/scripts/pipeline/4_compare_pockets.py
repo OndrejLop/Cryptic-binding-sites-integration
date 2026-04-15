@@ -32,6 +32,8 @@ parser.add_argument("--max-overlap-percent", type=float, default=0,
                     help="Maximum overlap percentage to consider pocket unique, 0-100 (default: 0=disabled)")
 parser.add_argument("--timestamp", action="store_true",
                     help="Add timestamp to output directory (prevents overwrites)")
+parser.add_argument("--resume-after", type=str, default=None,
+                    help="Skip PDB IDs up to and including this one (resume from next)")
 args = parser.parse_args()
 
 def load_pockets(csv_path):
@@ -221,8 +223,16 @@ print(f"Found {len(cs_lookup)} CryptoSite prediction files across {cs_dir}")
 cs_log_rows  = []
 p2r_log_rows = []
 
+resumed = args.resume_after is None
+
 for p2r_csv in sorted(p2rank_dir.glob("*_predictions.csv")):
     pdb_id = p2r_csv.stem.replace('_predictions', '')
+
+    if not resumed:
+        if pdb_id == args.resume_after:
+            resumed = True
+            print(f"Resuming after {pdb_id}...")
+        continue
 
     if pdb_id not in cs_lookup:
         print(f"Missing CryptoSite file for {pdb_id}, skipping.")
