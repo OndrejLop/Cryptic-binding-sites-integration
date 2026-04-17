@@ -48,6 +48,8 @@ parser.add_argument("--timestamp", action="store_true",
                     help="Add timestamp to output directory (prevents overwrites)")
 parser.add_argument("--resume-after", type=str, default=None,
                     help="Skip PDB IDs up to and including this one (resume from next)")
+parser.add_argument("--stop-before", type=str, default=None,
+                    help="Stop processing when reaching this PDB ID (exclusive)")
 args = parser.parse_args()
 
 POSITIVE_DISTANCE_THRESHOLD = args.distance_threshold
@@ -435,14 +437,12 @@ skip_counts = {
 }
 total_pdbs = len(pdb_chains)
 
-resumed = args.resume_after is None  # True if no resume needed
-
 for PDB_ID, chain_ids in pdb_chains.items():
-    if not resumed:
-        if PDB_ID == args.resume_after:
-            resumed = True
-            print(f'Resuming after {PDB_ID}...')
+    if args.resume_after is not None and PDB_ID <= args.resume_after:
         continue
+    if args.stop_before is not None and PDB_ID >= args.stop_before:
+        print(f'Reached stop-before {args.stop_before}, halting.')
+        break
 
     print(f'Processing {PDB_ID}...')
     predictions = {}

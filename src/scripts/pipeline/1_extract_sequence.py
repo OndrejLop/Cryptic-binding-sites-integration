@@ -41,7 +41,7 @@ def extract_sequence(pdb_file):
                             aa = seq1(residue.get_resname())
                             sequence.append(aa)
                         except KeyError:
-                            # Unknown residue, skip or use 'X'
+                            # Unknown residue, use 'X'
                             sequence.append('X')
                 
                 if sequence:
@@ -62,8 +62,7 @@ def main():
     """Main entry point. Searches for PDB files and extracts sequences."""
     pdb_files = []
 
-    # Search for PDB files with .ent and .pdb extensions
-    pdb_files.extend(glob.glob(os.path.join(source_dir, '*.ent')))
+    # Search for PDB files with .pdb extensions
     pdb_files.extend(glob.glob(os.path.join(source_dir, '*.pdb')))
     
     if not pdb_files:
@@ -75,7 +74,6 @@ def main():
     for pdb_file in pdb_files:
         print(f"{'='*60}")
         print(f"Processing: {pdb_file}")
-        print(f"{'='*60}")
         extract_sequence(pdb_file)
 
 if __name__ == "__main__":
