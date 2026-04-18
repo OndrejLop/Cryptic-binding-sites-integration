@@ -351,12 +351,14 @@ def compute_distance_matrix(pdb_path, chain_id):
     from biotite.structure.io.pdb import get_structure
     from biotite.structure import get_residues
     from scipy.spatial import distance_matrix
-    
+
     pdb_file = pdb.PDBFile.read(pdb_path)
     protein = get_structure(pdb_file, model=1)
+    # Keep only primary altloc ("" or "A") to avoid double-counting CA atoms
     protein = protein[(protein.atom_name == "CA")
                         & (protein.element == "C")
-                        & (protein.chain_id == chain_id) ]
+                        & (protein.chain_id == chain_id)
+                        & np.isin(protein.altloc_id, ["", "A"])]
     if len(protein) == 0:
         return None
     _, residue_types = get_residues(protein)
@@ -398,7 +400,8 @@ def get_residue_ids(pdb_path, chain_id):
     protein = get_structure(pdb_file, model=1)
     protein = protein[(protein.atom_name == "CA")
                         & (protein.element == "C")
-                        & (protein.chain_id == chain_id)]
+                        & (protein.chain_id == chain_id)
+                        & np.isin(protein.altloc_id, ["", "A"])]
     if len(protein) == 0:
         return [], []
     residue_ids, residue_types = get_residues(protein)
