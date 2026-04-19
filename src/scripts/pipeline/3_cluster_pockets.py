@@ -36,9 +36,8 @@ import json
 ROOT       = Path(__file__).parent.parent.parent.parent
 
 sys.path.append(str(ROOT / 'src' / 'utilities'))
-import clustering_utils
-import eval_utils
-from eval_utils import CryptoBenchClassifier
+import utils
+from utils import CryptoBenchClassifier
 
 parser = argparse.ArgumentParser(description="Cluster predicted binding sites with smoothing")
 parser.add_argument("--decision-threshold", type=float, default=0.7,
@@ -69,7 +68,7 @@ DECISION_THRESHOLD = args.decision_threshold
 PREDICTIONS_DIR = ROOT / 'data' / 'intermediate' / 'predictions'
 EMBEDDINGS_DIR  = ROOT / 'data' / 'intermediate' / 'embeddings'
 PDB_DIR         = ROOT / 'data' / 'input' / 'pdb'
-base_output_dir = ROOT / 'data' / 'output' / 'CS_predictions'
+base_output_dir = ROOT / 'data' / 'output' / 'CS_predictions' #TODO will change to Seq2Pockets after consolidation
 MODEL_PATH      = ROOT / 'data' / 'models' / '3B-model.pt'
 SMOOTHING_MODEL_PATH = ROOT / 'data' / 'models' / 'smoother.pt'
 
@@ -150,7 +149,7 @@ def keep_only_standard_residues(structure):
     """Keep only standard protein residues in the structure."""
     for chain in list(structure):
         for residue in list(chain):
-            if residue.get_resname() not in clustering_utils.aal_prot:
+            if residue.get_resname() not in utils.aal_prot:
                 chain.detach_child(residue.id)
     return structure
 
@@ -234,12 +233,12 @@ def get_protein_surface_points(pdb_path, predicted_binding_sites):
     struct = keep_only_standard_residues(struct)
 
     # compute SASA and attach 3D surface points
-    sr = ShrakeRupley(n_points=clustering_utils.POINTS_DENSITY_PER_ATOM, probe_radius=clustering_utils.PROBE_RADIUS)
+    sr = ShrakeRupley(n_points=utils.POINTS_DENSITY_PER_ATOM, probe_radius=utils.PROBE_RADIUS)
     try:
         sr.compute(struct, level="A")
     except ValueError:
         return np.empty((0, 3)), np.array([]), {}, {}, {}
-    _attach_sasa_points(struct, clustering_utils.POINTS_DENSITY_PER_ATOM, clustering_utils.PROBE_RADIUS)
+    _attach_sasa_points(struct, utils.POINTS_DENSITY_PER_ATOM, utils.PROBE_RADIUS)
 
     surface_points = []
     map_surface_points_to_atom_id = []
@@ -301,7 +300,7 @@ def execute_atom_clustering(pdb_path, predictions, probabilities, eps=10):
         return None, None, None, None, None
 
     # 3. Cluster surface points and propagate labels to atoms    
-    atom_labels = clustering_utils.cluster_atoms_by_surface(
+    atom_labels = utils.cluster_atoms_by_surface(
         all_points, map_point_to_atom, eps=eps)
 
     # get cluster dictionary {cluster_id: [atom_id, ...], ...}
@@ -506,7 +505,7 @@ for PDB_ID, chain_ids in pdb_chains.items():
                 concatenated_embedding = torch.tensor(np.concatenate((current_residue_embedding, surrounding_embedding), axis=0), dtype=torch.float32).to(device)
 
                 test_logits = smoothing_model(concatenated_embedding).squeeze()
-                result = (torch.sigmoid(test_logits) > eval_utils.SMOOTHING_DECISION_THRESHOLD).float()
+                result = (torch.sigmoid(test_logits) > utils.SMOOTHING_DECISION_THRESHOLD).float()
                 if result == 1:
                     print(f'Smoothing: Chain {chain_id} Residue {residue_idx} set to binding based on surrounding residues')
                     predictions[chain_id] = np.append(predictions[chain_id], residue_idx)

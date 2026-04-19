@@ -217,23 +217,13 @@ All configurable parameters can be set via command-line flags. See [PIPELINE.md]
 
 ## Utilities
 
-### `clustering_utils.py`
-Core clustering functions:
-- `execute_atom_clustering()`: Full clustering pipeline
-- `cluster_atoms_by_surface()`: MeanShift clustering with voting
-- `keep_only_standard_residues()`: Filter non-standard residues
-- `get_protein_surface_points()`: Extract 3D surface points
-
-### `cryptoshow_utils.py`
-Sequence utilities:
-- Residue numbering conversions (mmCIF ↔ PDB auth)
-- Sequence to residue mapping
-
-### `eval_utils.py`
-Evaluation utilities:
-- Model loading and inference
-- Smoothing model integration
-- Threshold constants
+### `utils.py`
+Single shared module used by the pipeline:
+- `cluster_atoms_by_surface()`: MeanShift clustering of SASA surface points with majority-vote label propagation to atoms
+- `aal_prot`: set of standard protein residue names
+- `POINTS_DENSITY_PER_ATOM`, `PROBE_RADIUS`: SASA calculation constants
+- `CryptoBenchClassifier`: smoothing model architecture (3-layer MLP on concatenated ESM-2 embeddings)
+- `SMOOTHING_DECISION_THRESHOLD`: threshold for the smoothing model
 
 ## HPC/Cluster Usage
 
