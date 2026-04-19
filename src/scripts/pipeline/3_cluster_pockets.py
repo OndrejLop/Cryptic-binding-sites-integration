@@ -51,7 +51,17 @@ parser.add_argument("--resume-after", type=str, default=None,
                     help="Skip PDB IDs up to and including this one (resume from next)")
 parser.add_argument("--stop-before", type=str, default=None,
                     help="Stop processing when reaching this PDB ID (exclusive)")
+parser.add_argument("--limit", type=int, default=None,
+                    help="Stop after processing N PDB IDs (for benchmarking)")
+parser.add_argument("--pdb-list", type=str, default=None,
+                    help="File with one PDB ID per line; only these will be processed")
 args = parser.parse_args()
+
+pdb_list_filter = None
+if args.pdb_list:
+    with open(args.pdb_list) as f:
+        pdb_list_filter = {line.strip() for line in f if line.strip()}
+    print(f"Restricting to {len(pdb_list_filter)} PDB IDs from {args.pdb_list}")
 
 POSITIVE_DISTANCE_THRESHOLD = args.distance_threshold
 DECISION_THRESHOLD = args.decision_threshold
@@ -438,13 +448,20 @@ skip_counts = {
     "processed_ok": 0,
 }
 total_pdbs = len(pdb_chains)
+processed_in_run = 0
 
 for PDB_ID, chain_ids in pdb_chains.items():
+    if pdb_list_filter is not None and PDB_ID not in pdb_list_filter:
+        continue
     if args.resume_after is not None and PDB_ID <= args.resume_after:
         continue
     if args.stop_before is not None and PDB_ID >= args.stop_before:
         print(f'Reached stop-before {args.stop_before}, halting.')
         break
+    if args.limit is not None and processed_in_run >= args.limit:
+        print(f'Reached --limit {args.limit}, halting.')
+        break
+    processed_in_run += 1
 
     print(f'Processing {PDB_ID}...')
     predictions = {}
