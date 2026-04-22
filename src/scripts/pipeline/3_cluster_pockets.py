@@ -104,13 +104,13 @@ print(f"Metadata saved:       {metadata_path}")
 print(f"{'='*60}\n")
 
 
-def map_residue_numbering_to_auth(pdb_path: str, binding_residues: dict[np.ndarray], binding_scores: dict[np.ndarray]) -> dict[list[int]]:
+def map_residue_numbering_to_auth(pdb_path: str, binding_residues: dict[str, np.ndarray], binding_scores: dict[str, np.ndarray]) -> tuple[dict[str, list[int]], dict[str, list[float]]]:
     """
     Map the binding residues from zero-based numbering (0=first residue, 1=second residue, etc.) to the auth labeling (residue labeling from the PDB file).
     Args:
         pdb_path (str): Path to the PDB file.
-        binding_residues (dict[np.ndarray]): Dictionary of binding residues, keys are chain IDs and values are arrays of residue indices (zero-based).
-        auth (bool): Whether to use author fields.
+        binding_residues (dict[str, np.ndarray]): Dictionary of binding residues, keys are chain IDs and values are arrays of residue indices (zero-based).
+        binding_scores (dict[str, np.ndarray]): Dictionary of binding scores, keys are chain IDs and values are arrays of scores.
     Returns:
         dict[list[int]]: Dictionary of binding residues in the auth labeling, keys are chain IDs and values are lists of residue numbers.
     """
@@ -133,10 +133,12 @@ def map_residue_numbering_to_auth(pdb_path: str, binding_residues: dict[np.ndarr
         mapped_scores[chain_id] = []
         residue_ids, _ = get_residues(protein_chain)
         
+        assert len(binding_scores[chain_id]) == len(residue_ids), f"Chain {chain_id} has different number of scores than number of residues in the structure."
+
         # loop over all residues in chain and check if the residue index matches the binding residue index, if so, add the auth residue number to the mapped residues list
+        binding_set = set(binding_residues[chain_id])
         for i, residue_id in enumerate(residue_ids):
-            residue_index = np.where(binding_residues[chain_id] == i)[0] # get positions where the residue index matches the binding residue index
-            if len(residue_index) > 0:
+            if i in binding_set:
                 mapped_residues[chain_id].append(residue_id)
                 mapped_scores[chain_id].append(binding_scores[chain_id][i])
     
@@ -317,7 +319,6 @@ def execute_atom_clustering(pdb_path, predictions, probabilities, eps=10):
     for chain_id, pred in mapped_prediction.items():
         auth_predictions[chain_id] = np.array(pred)
 
-
     # 4.1 For each atom in each cluster, get its residue and score
     for atom_id, cluster_label in atom_labels.items():
         chain_id, residue_id = map_atoms_to_residue_id[atom_id] # this is auth residue id
@@ -340,6 +341,9 @@ def execute_atom_clustering(pdb_path, predictions, probabilities, eps=10):
     residue_clusters = {i: [] for i in range(len(cluster_residues))}
     # 4.3 get residue cluster assignment based on voting
     for residue, votes in residue_voting.items():
+        # if residue doesn't have any SASA points
+        if sum(votes) == 0:
+            continue
         cluster = np.argmax(votes)
         residue_clusters[cluster].append(residue)
     
@@ -368,7 +372,8 @@ def compute_distance_matrix(pdb_path, chain_id):
                         & (protein.chain_id == chain_id) ]
     if len(protein) == 0:
         return None
-    _, residue_types = get_residues(protein)
+    
+    # _, residue_types = get_residues(protein)
 
     # To calculate embeddings later
     # sequence = ''.join([cryptoshow_utils.three_to_one(residue_type) for residue_type in residue_types])
@@ -382,7 +387,10 @@ def compute_distance_matrix(pdb_path, chain_id):
 
 from collections import defaultdict
 
-smoothing_model = torch.load(SMOOTHING_MODEL_PATH, weights_only=False)
+if torch.cuda.is_available():
+    smoothing_model = torch.load(SMOOTHING_MODEL_PATH, weights_only=False)
+else:
+    smoothing_model = torch.load(SMOOTHING_MODEL_PATH, weights_only=False, map_location=torch.device('cpu'))
 device = 'cuda' if torch.cuda.is_available() else 'cpu'
 
 # discover all PDB IDs and their chains from prediction files
@@ -491,7 +499,7 @@ for PDB_ID, chain_ids in pdb_chains.items():
                 del predictions[chain_id]; del probabilities[chain_id]
                 continue
 
-            smoothed_predictions[chain_id] = predictions[chain_id].copy()
+            new_binding_indices = list(predictions[chain_id])
             for residue_idx in np.where(np.array(prediction) < DECISION_THRESHOLD)[0]:
                 current_residue_embedding = embedding[residue_idx]
                 close_residues_indices = np.where(distance_matrix[residue_idx] < POSITIVE_DISTANCE_THRESHOLD)[0]
@@ -508,8 +516,10 @@ for PDB_ID, chain_ids in pdb_chains.items():
                 result = (torch.sigmoid(test_logits) > utils.SMOOTHING_DECISION_THRESHOLD).float()
                 if result == 1:
                     print(f'Smoothing: Chain {chain_id} Residue {residue_idx} set to binding based on surrounding residues')
-                    predictions[chain_id] = np.append(predictions[chain_id], residue_idx)
-
+                    new_binding_indices.append(residue_idx)
+        
+            smoothed_predictions[chain_id] = np.array(new_binding_indices)
+        
         if not predictions or all(len(p) == 0 for p in predictions.values()):
             print(f'  [SKIP] {PDB_ID}: no binding residues above threshold')
             skip_counts["no_binding_residues"] += 1
