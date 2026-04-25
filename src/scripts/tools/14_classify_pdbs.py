@@ -21,7 +21,7 @@ import urllib.error
 import urllib.request
 from pathlib import Path
 
-ROOT = Path(__file__).parent.parent.parent.parent
+ROOT = Path(__file__).resolve().parent.parent.parent.parent
 PDB_DIR = ROOT / 'data' / 'input' / 'pdb'
 OUTPUT_CSV = ROOT / 'data' / 'intermediate' / 'pdb_classification.csv'
 

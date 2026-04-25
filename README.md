@@ -32,7 +32,7 @@ The pipeline predicts binding sites by:
 
 - Python 3.12+
 - PyTorch with CUDA support (GPU recommended for predictions)
-- ESM2 3B model (≈2GB)
+- ESM2 3B model (≈5GB) 
 - PDB structure files
 
 ### Installation
@@ -45,7 +45,7 @@ cd /git
 # Install dependencies
 pip install -r requirements.txt
 
-# Download models (if not already present)
+# Download models https://owncloud.cesnet.cz/index.php/s/sAvrV3RiTWKFmc1
 mkdir -p data/models
 # Place 3B-model.pt and smoother.pt in data/models/
 ```
