@@ -37,7 +37,6 @@ ROOT       = Path(__file__).parent.parent.parent.parent
 
 sys.path.append(str(ROOT / 'src' / 'utilities'))
 import utils
-from utils import CryptoBenchClassifier
 
 parser = argparse.ArgumentParser(description="Cluster predicted binding sites with smoothing")
 parser.add_argument("--decision-threshold", type=float, default=0.7,
