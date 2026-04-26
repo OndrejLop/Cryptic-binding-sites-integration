@@ -52,10 +52,11 @@ ROOT = Path(__file__).parent.parent.parent.parent
 parser = argparse.ArgumentParser(description="Generate statistics and plots from pipeline results")
 parser.add_argument("--timestamp", action="store_true",
                     help="Write analysis output into a timestamped subdir of data/output/analysis/")
-parser.add_argument("--exclude-file", type=Path, default=None,
+parser.add_argument("--exclude-file", type=Path,
+                    default=Path("data/output/analysis/excluded_pdbs.txt"),
                     help="Path to text file listing pdb_ids to exclude (one per line, # comments). "
-                         "Default: none (no exclusions). "
-                         "Recommended location when used: data/output/analysis/excluded_pdbs.txt")
+                         "Default: data/output/analysis/excluded_pdbs.txt (silently no-op if missing). "
+                         "Pass an empty path to disable.")
 args = parser.parse_args()
 
 P2RANK_DIR  = ROOT / 'data' / 'input' / 'P2Rank'
@@ -254,33 +255,42 @@ def _violin_box(ax, datasets, labels, colors, ylabel, use_log2=False):
 # 1. Pipeline funnel
 # ============================================================
 
-def _read_novel_csv(filename):
-    """Load a novel-pocket CSV and drop excluded pdb_ids.
-    Looks first at RESULTS_DIR (flat layout), then falls back to the most
-    recent timestamped subdir (e.g. results/{timestamp}_{params}/)."""
-    csv_path = RESULTS_DIR / filename
-    if not csv_path.exists():
-        timestamped = sorted([d for d in RESULTS_DIR.iterdir()
-                              if d.is_dir() and not d.name.lower().startswith("pdb")],
-                             reverse=True)
-        for d in timestamped:
-            cand = d / filename
-            if cand.exists():
-                csv_path = cand
-                break
-        else:
-            return None
+def _find_novel_dir(results_dir: Path) -> Path | None:
+    """Locate the directory containing novel_s2p_pockets.csv. Tries the flat
+    layout first, then falls back to the most recent timestamped subdir."""
+    if (results_dir / "novel_s2p_pockets.csv").exists():
+        return results_dir
+    if not results_dir.exists():
+        return None
+    timestamped = sorted([d for d in results_dir.iterdir()
+                          if d.is_dir() and not d.name.lower().startswith("pdb")],
+                         reverse=True)
+    for d in timestamped:
+        if (d / "novel_s2p_pockets.csv").exists():
+            return d
+    return None
+
+
+def _load_novel_csv(filename: str, apply_exclusions: bool = True) -> pd.DataFrame | None:
+    """Load a novel/unique pocket CSV from RESULTS_DIR (or its newest
+    timestamped run). Returns None if not found."""
+    base = _find_novel_dir(RESULTS_DIR)
+    if base is None:
+        return None
+    path = base / filename
+    if not path.exists():
+        return None
     try:
-        df = pd.read_csv(csv_path)
+        df = pd.read_csv(path)
     except Exception:
         return None
-    if EXCLUDED_PDBS and "pdb_id" in df.columns:
+    if apply_exclusions and EXCLUDED_PDBS and "pdb_id" in df.columns:
         df = df[~df["pdb_id"].astype(str).isin(EXCLUDED_PDBS)]
     return df
 
 
 def _count_novel_proteins(filename):
-    df = _read_novel_csv(filename)
+    df = _load_novel_csv(filename)
     return 0 if df is None else len(df)
 
 
@@ -566,10 +576,10 @@ def novel_pocket_stats(out):
         ("Seq2Pocket-unique", "novel_s2p_pockets.csv"),
         ("P2Rank-unique", "novel_p2r_pockets.csv"),
     ]:
-        df = _read_novel_csv(filename)
+        df = _load_novel_csv(filename)
         if df is None:
             alt = filename.replace("novel_", "").replace("pockets", "unique_pockets")
-            df = _read_novel_csv(alt)
+            df = _load_novel_csv(alt)
         if df is None:
             out.write(f"  {label}: file not found ({filename})\n")
             results[label] = None
@@ -1144,10 +1154,12 @@ def _load_comparable(membership_path: Path) -> set[str]:
     return set(df.loc[mask, "pdb_id"].map(_normalize_pdb_id))
 
 
-def _load_unique_csv(path: Path) -> pd.DataFrame:
-    if not path.exists():
+def _enrich_unique_df(df: pd.DataFrame | None) -> pd.DataFrame:
+    """Normalize a novel/unique CSV DataFrame for the per-class analysis:
+    add n_unique (count of pocket numbers) and sizes (parsed list)."""
+    if df is None or df.empty:
         return pd.DataFrame(columns=["pdb_id", "n_unique", "sizes"])
-    df = pd.read_csv(path)
+    df = df.copy()
     df["pdb_id"] = df["pdb_id"].map(_normalize_pdb_id)
     df["n_unique"] = df["pockets"].fillna("").apply(lambda s: len(s.split()) if s else 0)
     if "sizes" in df.columns:
@@ -1156,21 +1168,6 @@ def _load_unique_csv(path: Path) -> pd.DataFrame:
     else:
         df["sizes"] = [[] for _ in range(len(df))]
     return df[["pdb_id", "n_unique", "sizes"]]
-
-
-def _find_novel_csvs(results_dir: Path) -> tuple[Path, Path] | None:
-    name = "novel_s2p_pockets.csv"
-    flat = results_dir / name
-    if flat.exists():
-        return flat, results_dir / "p2r_unique_pockets.csv"
-    timestamped = sorted([d for d in results_dir.iterdir()
-                          if d.is_dir() and not d.name.lower().startswith("pdb")],
-                         reverse=True)
-    for d in timestamped:
-        p = d / name
-        if p.exists():
-            return p, d / "p2r_unique_pockets.csv"
-    return None
 
 
 def _per_class_stats(classification: pd.DataFrame,
@@ -1454,16 +1451,16 @@ def run_classification_analysis(out, plots_dir, results_dir,
         out.write("  Run tool 14 (classify_pdbs) and/or tool 15 (--make) first.\n\n")
         return
 
-    novel_pair = _find_novel_csvs(results_dir)
-    if novel_pair is None:
+    if _find_novel_dir(results_dir) is None:
         out.write(f"  Skipped — no novel_s2p_pockets.csv found under {results_dir}\n\n")
         return
-    s2p_csv, p2r_csv = novel_pair
 
     classification = _load_classification(classification_csv)
     comparable = _load_comparable(membership_csv)
-    s2p_df = _load_unique_csv(s2p_csv)
-    p2r_df = _load_unique_csv(p2r_csv)
+    # apply_exclusions=False so per-class stats include excluded PDBs
+    # (change to True if you want exclusions enforced everywhere)
+    s2p_df = _enrich_unique_df(_load_novel_csv("novel_s2p_pockets.csv", apply_exclusions=False))
+    p2r_df = _enrich_unique_df(_load_novel_csv("p2r_unique_pockets.csv", apply_exclusions=False))
 
     stats, sizes_per_class, n_per_class = _per_class_stats(
         classification, comparable, s2p_df, p2r_df,
