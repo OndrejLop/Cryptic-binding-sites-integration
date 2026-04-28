@@ -30,15 +30,14 @@ import subprocess
 import sys
 import tempfile
 
-ROOT     = Path(__file__).parent.parent.parent.parent
+ROOT       = Path(__file__).parent.parent.parent.parent
 MODEL_PATH = ROOT / 'data' / 'models' / '3B-model.pt'
 FASTA_DIR  = ROOT / 'data' / 'intermediate' / 'fastas'  # Read from main fastas directory
 out_dir    = ROOT / 'data' / 'intermediate' / 'predictions'
 emb_dir    = ROOT / 'data' / 'intermediate' / 'embeddings'
 P2R_DIR    = ROOT / 'data' / 'input' / 'P2Rank'
 DS_PATH    = ROOT / 'data' / 'intermediate' / 'p2rank_dataset.ds'
-P2RANK_BIN = Path(os.environ.get(
-    "P2RANK_BIN", str(ROOT / 'data' / 'tools' / 'p2rank_2.5.1' / 'prank')))
+P2RANK_BIN = Path(os.environ.get("P2RANK_BIN", str(ROOT / 'data' / 'tools' / 'P2Rank' / 'prank')))
 sys.path.append(str(ROOT / 'src' / 'utilities'))
 
 DROPOUT = 0.3
@@ -286,7 +285,7 @@ def run_p2rank_batch(ds_path, p2r_dir, prank_bin):
         return
     with tempfile.TemporaryDirectory(prefix="p2r_run_") as tmp:
         tmp = Path(tmp)
-        cmd = [str(prank_bin), "predict", "-l", str(ds_path), "-o", str(tmp)]
+        cmd = [str(prank_bin), "predict", str(ds_path), "-o", str(tmp)]
         print(f"  $ {' '.join(cmd)}")
         try:
             subprocess.run(cmd, check=True)

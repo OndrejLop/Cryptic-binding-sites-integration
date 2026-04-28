@@ -76,8 +76,8 @@ def write_p2rank_dataset(pdb_files, ds_path):
     Returns the number of entries."""
     needing = [p for p in pdb_files if needs_p2rank_prediction(p)]
     with open(ds_path, 'w') as f:
-        f.write("HEADER:\n")
         f.write("PARAM.PROTEIN_LOADER_FORCE_BIOJAVA_LIBRARY=true\n\n")
+        f.write("HEADER: protein\n\n")
         for p in needing:
             f.write(f"{Path(p).resolve()}\n")
     return len(needing)
