@@ -18,6 +18,7 @@ This repository contains a complete bioinformatics pipeline for predicting prote
 - Python 3.12+
 - Java 17-24
 - PyTorch with CUDA support (GPU recommended for predictions)
+- 8 GB of free storage + additional storage for your files
 
 ### Installation and setup
 
