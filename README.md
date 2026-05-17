@@ -26,6 +26,18 @@ neighbor count) distributions across the resulting pocket categories.
 - Per-pocket SASA + protrusion distributions across unique/shared categories
 - PyMOL `.pml` visualization scripts and aggregate plots/CSVs
 
+## Precomputed results
+
+A full run over the PDB dataset — Seq2Pocket cryptic-pocket predictions,
+pocket-level comparison against P2Rank, and the resulting statistics — is
+available for download:
+
+**[OwnCloud storage (CESNET)](https://owncloud.cesnet.cz/index.php/s/R2vdbzZfWcbJPgl)**
+
+The archive contains the `data/output/` tree produced by steps 3–5:
+Seq2Pocket pocket predictions, step 4 comparison CSVs, and step 5 analysis
+plots and summary statistics.
+
 ## Quick start
 
 ### Requirements
